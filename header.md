@@ -1,10 +1,10 @@
 # Introduction
-The Lassie API application enables a set of external systems to get, create, edit, delete and synchronize data from various sources in the Lassie system. For example, you can request which events are open for subscriptions, get which bartenders are checked into the Bar Module or perform transactions.
+The Lassie API application enables external systems to get, create, edit, delete and synchronize data from various sources in the Lassie system. For example, you can request which events are open for subscriptions, get which bartenders are checked into the Bar Module, perform transactions and even manage personal payments accounts.
 
 ## API Types
 Each <code>api_key</code> has a single type giving rights to specific functionality within the API. You need to create multiple keys if an application needs multiple types. There are a total of four types:
 1. <b>Model API.</b> A Model API is able to request data directly from methods allocated in the data structure classes of Lassie. Rights to do this should be enabled for each individual method. Managing these rights is done in the API Rights Section of the Rights Module by one of the administrators of Lassie.
-2. <b>Person API.</b> A Person API is able to get and update person specific information, such as addresses, emails, payments, etc. This API Key is linked to one specific person ID limiting it to the information of one person. It is not required to provide additional rights to these keys for specific Person API functionality.
+2. <b>Person API.</b> A Person API is able to get and update person specific information, such as addresses, emails, payments, etc. Furthermore, payment accounts can be managed. This API Key is linked to one specific person ID limiting it to the information of one person. It is not required to provide additional rights to these keys for specific Person API functionality.
 3. <b>Person Auth API.</b> The Person Auth API enables you to create new Person API Keys. Most of the time Person API’s are created through logging into an app that need to show personal data. With a Person Auth API Key you can authorize such an app to login persons, get new Person API Keys and fetch their data. This way you only allow apps to handle person logins you trust.
 4. <b>Person Management API.</b> The Person Management API allows you to create new person records and update existing information. Please note that this API has access to all the personal information. It is not required to provide additional rights to these keys for specific Person Management API functionality.
 5. <b>Transaction API.</b> A Transaction API is meant to send transactional data to Lassie. This API Key gives rights to transactional functionalities for a single Transaction Module (e.g. Bar or Shop Module). You can fetch the current products, product categories, transaction types (e.g. PIN / Cash). This information can then be used to post a transaction to Lassie. It is not required to provide additional rights to these keys for specific Transaction API functionality.
@@ -20,12 +20,12 @@ Several Lassie API Libraries have been written for a variety of programming lang
 
 Available libraries (under construction):
 1. PHP
+2. NodeJS
 2. Java
 3. Android
 4. iOS
 5. Python
 6. Arduino
-7. ESP 8266 / 3212
 
 ## Request Structure
 All requests have a set of required parameters that should be found in the <code>query</code> or <code>post</code> parameters (depending on the request):
@@ -62,7 +62,7 @@ Example output for <code>xml</code>:
 ## Hash Calculations
 The implementation to determine the <code>api_hash</code> might vary per programming language, but here we will briefly specify what is expected.
 
-You should perform a <code>hmac</code> hash with <code>sha256</code> as the algorithm. The input content should consist of a concatenation of your public <code>api_key</code> and the <code>api_hash_content</code> separated with a colon (':'). The output hash should finally be converted to a <code>base64</code> string to make sure it can be included in an URL.
+A <code>hmac</code> hash is required with a <code>sha256</code> hashing algorithm. The input content consists of a concatenation of the public <code>api_key</code> and the <code>api_hash_content</code> separated with a colon (':'). The output hash is then converted to a <code>base64</code> string to make it and URL-safe string.
 
 Example methods for PHP implementation:
 

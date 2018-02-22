@@ -1,10 +1,10 @@
 {
   "name": "Lassie API Documentation",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "The Lassie API implementation allows external systems to communicate with Lassie to get, add, delete or synchronize various types of data.",
   "title": "Lassie API Documentation",
-  "url" : "http://lassie.example.com/",
-  "sampleUrl": "http://188.166.115.34/dev/",
+  "url" : "https://demo.lassie.cloud/",
+  "sampleUrl": "https://demo.lassie.cloud/",
   "header": {
     "title": "Getting Started",
     "filename": "header.md"
@@ -15,7 +15,7 @@
   },
   "template": {
   	"withCompare": true,
-  	"withGenerator": true,
+  	"withGenerator": false,
     "forceLanguage" : "en"
   }
 }
