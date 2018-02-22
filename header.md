@@ -67,3 +67,6 @@ A <code>hmac</code> hash is required with a <code>sha256</code> hashing algorith
 Example methods for PHP implementation:
 
     base64_encode(hash_hmac('sha256', $api_key .':'. $api_hash_content, $api_secret));
+
+## Testing
+Each end-point listed below provides a test script to send API requests to <code>https://demo.lassie.cloud/</code>. You can make an API key for testing purposes by visiting <code>https://demo.lassie.cloud/apps</code>. Note that the mentioned hash protection is disabled for this instance to make sure you are not required to calculate a new hash yourself each time you want to make a request. This means only the API key is required for valid authentication. This protection is required when you want to switch to your own Lassie instance.
