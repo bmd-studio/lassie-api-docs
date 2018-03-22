@@ -1,7 +1,7 @@
 [
   {
     "type": "get",
-    "url": "api/get_validity/",
+    "url": "api/v2/get_validity/",
     "title": "Check for valid API key",
     "version": "2.0.0",
     "name": "Upgrade_account",
@@ -86,7 +86,7 @@
     "groupTitle": "General",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/get_validity/"
+        "url": "https://demo.lassie.cloud/api/v2/get_validity/"
       }
     ],
     "parameter": {
@@ -118,8 +118,88 @@
     }
   },
   {
+    "type": "get",
+    "url": "api/v2/lassie/app/key",
+    "title": "Get Lassie App key",
+    "version": "2.0.0",
+    "name": "Lassie_Get_App_Key",
+    "group": "Lassie",
+    "permission": [
+      {
+        "name": "Lassie Auth Token"
+      }
+    ],
+    "description": "<p>Get the API key used by the organisation to perform authentication requests and retrieve public information for their app.</p>",
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/lassie/app/key?auth_token=SECRET",
+        "type": "json"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "auth_token",
+            "description": "<p>Authentication token specifically designed for the Lassie App to get the configured Person Auth API key from each instance. Please note that if you remove this Person Auth API key the Lassie App will become unusable. You can configure the key in the administration/settings section.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>key record</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Basic response:",
+          "content": "HTTPS/1.1 200 Success\n {\n     \"status\": true,\n     \"error\": \"\",\n     \"api_key\":\n     {\n         \"id\": \"46\",\n         \"active\": \"1\",\n         \"api_key\": \"28bdccc9cd9792c6e37dda66372620b7\",\n         \"api_secret\": \"53b60f95789b3a43edc5fc9aac8618c7\",\n         \"name\": \"Person Auth API for Demo Lassie\",\n         \"type_id\": \"2\",\n         \"person_id\": \"0\",\n         \"description\": \"Public API key to authorize the organisation app\",\n         \"responsible_name\": \"John Doe\",\n         \"responsible_email\": \"example@gmail.com\",\n         \"create_timestamp\": \"2016-02-26 22:31:10\",\n         \"update_timestamp\": \"2016-02-26 22:31:10\",\n         ...\n     },\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NoAppConfigured",
+            "description": "<p>When there is no App API key record configured.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example response:",
+          "content": "HTTPS/1.1 400 Bad Request\n {\n     \"status\": false,\n     \"error\": \"There is no App API configured\",\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/home/pep/htdocs/lassie-core/app/application/controllers/Api.php",
+    "groupTitle": "Lassie",
+    "sampleRequest": [
+      {
+        "url": "https://demo.lassie.cloud/api/v2/lassie/app/key"
+      }
+    ]
+  },
+  {
     "type": "get/post",
-    "url": "api/model/",
+    "url": "api/v2/model/",
     "title": "Execute model method",
     "version": "2.0.0",
     "name": "Get_post_Model",
@@ -133,7 +213,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i https://demo.lassie.cloud/api/v2/model\n    ?name=group_model\n    &method=get_groups\n    &active_only=true\n    &order_column=name\n    &api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/model\n    ?model_name=group_model\n    &method_name=get_groups\n    &active_only=true\n    &order_column=name\n    &api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
         "type": "json"
       }
     ],
@@ -144,14 +224,14 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "name",
+            "field": "model_name",
             "description": "<p>The name of the Model.</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "method",
+            "field": "method_name",
             "description": "<p>The Method you want to execute.</p>"
           },
           {
@@ -212,13 +292,13 @@
             "group": "Error 4xx",
             "optional": false,
             "field": "ModelNotFound",
-            "description": "<p>The <code>name</code> of the Model was not found.</p>"
+            "description": "<p>The <code>model_name</code> of the Model was not found.</p>"
           },
           {
             "group": "Error 4xx",
             "optional": false,
             "field": "MethodNotFound",
-            "description": "<p>The <code>method</code> of the Model was not found.</p>"
+            "description": "<p>The <code>method_name</code> of the Model was not found.</p>"
           },
           {
             "group": "Error 4xx",
@@ -258,13 +338,13 @@
     "groupTitle": "Model",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/model/"
+        "url": "https://demo.lassie.cloud/api/v2/model/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/person/account/accept/",
+    "url": "api/v2/person/account/accept/",
     "title": "Accept payment account invitation",
     "version": "2.0.0",
     "name": "Accept_Invitation_To_Payment_Account",
@@ -278,7 +358,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i https://demo.lassie.cloud/api/v2/person/account/invite --data\n    \"account_id=10\n    &api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939\"",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/person/account/accept --data\n    \"account_id=10\n    &api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939\"",
         "type": "json"
       }
     ],
@@ -377,13 +457,13 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/account/accept/"
+        "url": "https://demo.lassie.cloud/api/v2/person/account/accept/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/person/account/create/",
+    "url": "api/v2/person/account/create/",
     "title": "Create payment account",
     "version": "2.0.0",
     "name": "Create_Payment_Account",
@@ -517,13 +597,13 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/account/create/"
+        "url": "https://demo.lassie.cloud/api/v2/person/account/create/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/person/account/deactivate/",
+    "url": "api/v2/person/account/deactivate/",
     "title": "Deactivate payment account",
     "version": "2.0.0",
     "name": "Deactivate_Payment_Account",
@@ -625,13 +705,13 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/account/deactivate/"
+        "url": "https://demo.lassie.cloud/api/v2/person/account/deactivate/"
       }
     ]
   },
   {
     "type": "get",
-    "url": "api/person/groups/",
+    "url": "api/v2/person/groups/",
     "title": "Get groups",
     "version": "2.0.0",
     "name": "Get_Person_Groups",
@@ -710,7 +790,7 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/groups/"
+        "url": "https://demo.lassie.cloud/api/v2/person/groups/"
       }
     ],
     "parameter": {
@@ -743,7 +823,7 @@
   },
   {
     "type": "get",
-    "url": "api/person/information/",
+    "url": "api/v2/person/information/",
     "title": "Get personal information",
     "version": "2.0.0",
     "name": "Get_Person_Information",
@@ -867,13 +947,13 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/information/"
+        "url": "https://demo.lassie.cloud/api/v2/person/information/"
       }
     ]
   },
   {
     "type": "get",
-    "url": "api/person/payments/",
+    "url": "api/v2/person/payments/",
     "title": "Get payments",
     "version": "2.0.0",
     "name": "Get_Person_Payments",
@@ -986,13 +1066,13 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/payments/"
+        "url": "https://demo.lassie.cloud/api/v2/person/payments/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/person/account/invite/",
+    "url": "api/v2/person/account/invite/",
     "title": "Invite to payment account",
     "version": "2.0.0",
     "name": "Invite_To_Payment_Account",
@@ -1112,13 +1192,149 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/account/invite/"
+        "url": "https://demo.lassie.cloud/api/v2/person/account/invite/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/person/update/",
+    "url": "api/v2/person/events/pay/",
+    "title": "Pay for an event",
+    "version": "2.0.0",
+    "name": "Person_Pay_Event",
+    "group": "Person",
+    "permission": [
+      {
+        "name": "Person API"
+      }
+    ],
+    "description": "<p>Pay for an event using either an account or by a Mollie transaction. The person is auto subscribed to the event, when the he or she is not yet subscribed.</p>",
+    "examples": [
+      {
+        "title": "Pay by account:",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/person/events/pay --data\n    &event_id=934\n    &account_id=5\n    &api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939\"",
+        "type": "json"
+      },
+      {
+        "title": "Pay by transaction:",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/person/events/pay --data\n    &event_id=934\n    &transaction_request_id=tr_1058968389\n    &api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939\"",
+        "type": "json"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "response",
+            "description": "<p>Whether the payment was succesful or not.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Basic response:",
+          "content": "HTTPS/1.1 200 Success\n {\n     \"status\": true,\n     \"error\": \"\",\n     \"account_balance\": false\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "AccountInvalid",
+            "description": "<p>The provided account is unknown or is invalid after the transaction. This could be the case when the account doesn't have a high enough balance.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "TransactionInvalid",
+            "description": "<p>There are many different error responses when the transaction appears to be invalid. The error message elaborates on this.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "ApiDisabled",
+            "description": "<p>The API is disabled for your distribution of Lassie.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidApiKey",
+            "description": "<p>The <code>api_key</code> was not found.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidApiHash",
+            "description": "<p>The <code>api_hash</code> does not match the hash result of the calculation where <code>api_hash_content</code> is used.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "ExpiredApiHash",
+            "description": "<p>The <code>api_hash</code> is already used and therefore expired.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example response:",
+          "content": "HTTPS/1.1 400 Bad Request\n {\n     \"status\": false,\n     \"error\": \"The associated account is unknown or is not valid after this transaction.\",\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/home/pep/htdocs/lassie-core/app/application/controllers/Api.php",
+    "groupTitle": "Person",
+    "sampleRequest": [
+      {
+        "url": "https://demo.lassie.cloud/api/v2/person/events/pay/"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": false,
+            "field": "transaction_account_id",
+            "description": "<p>The account identifier requesting the specific account.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "api_key",
+            "description": "<p>The API key identifying your application.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "api_hash_content",
+            "description": "<p>A random piece of content for a one-time usage that will verify your secret key.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "api_hash",
+            "description": "<p>The hash result of a combination of your <code>api_key</code>, <code>api_hash_content</code> and <code>api_secret</code>.</p>"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "post",
+    "url": "api/v2/person/update/",
     "title": "Update personal information",
     "version": "2.0.0",
     "name": "Post_Update_Person",
@@ -1197,7 +1413,7 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/update/"
+        "url": "https://demo.lassie.cloud/api/v2/person/update/"
       }
     ],
     "parameter": {
@@ -1482,7 +1698,7 @@
   },
   {
     "type": "post",
-    "url": "api/person/account/revoke/",
+    "url": "api/v2/person/account/revoke/",
     "title": "Revoke payment account access",
     "version": "2.0.0",
     "name": "Revoke_Access_To_Payment_Account",
@@ -1602,13 +1818,13 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/account/revoke/"
+        "url": "https://demo.lassie.cloud/api/v2/person/account/revoke/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/person/api/revoke/",
+    "url": "api/v2/person/api/revoke/",
     "title": "Revoke personal API keys",
     "version": "2.0.0",
     "name": "Revoke_Personal_API",
@@ -1721,13 +1937,13 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/api/revoke/"
+        "url": "https://demo.lassie.cloud/api/v2/person/api/revoke/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/person/account/select/",
+    "url": "api/v2/person/account/select/",
     "title": "Select payment account",
     "version": "2.0.0",
     "name": "Select_Payment_Account",
@@ -1829,13 +2045,13 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/account/select/"
+        "url": "https://demo.lassie.cloud/api/v2/person/account/select/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/person/account/transfer/",
+    "url": "api/v2/person/account/transfer/",
     "title": "Transfer payment account ownership",
     "version": "2.0.0",
     "name": "Transer_Payment_Account_Ownership",
@@ -1955,13 +2171,146 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/account/transfer/"
+        "url": "https://demo.lassie.cloud/api/v2/person/account/transfer/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/person/account/upgrade/",
+    "url": "api/v2/person/account/update/",
+    "title": "Update payment account",
+    "version": "2.0.0",
+    "name": "Update_Payment_Account",
+    "group": "Person",
+    "permission": [
+      {
+        "name": "Person API"
+      }
+    ],
+    "description": "<p>Update the payment account information. For now renaming is the only supported feature. Down the road more features might be added.</p>",
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/person/account/create --data\n    \"account_id=2039\n    &account_name=Test2\n    &api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939\"",
+        "type": "json"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "account_id",
+            "description": "<p>The unique ID of the account to select. Note that this accounts requires the user to have rights on.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "account_name",
+            "description": "<p>The name given to the account in order to be identified by the user.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "api_key",
+            "description": "<p>The API key identifying your application.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "api_hash_content",
+            "description": "<p>A random piece of content for a one-time usage that will verify your secret key.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "api_hash",
+            "description": "<p>The hash result of a combination of your <code>api_key</code>, <code>api_hash_content</code> and <code>api_secret</code>.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "account_balance",
+            "description": "<p>The new balance on the account</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "account",
+            "description": "<p>The new account record</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example response:",
+          "content": "HTTPS/1.1 200 Success\n{\n    \"status\": true,\n    \"error\": \"\",\n    \"account_balance\" : 10,\n    \"account\" :\n      {\n         \"id\": 136,\n         \"active\": 1,\n         \"type_id\": 1,\n         \"name\": \"Test\",\n         \"owner_person_id\" : 91532,\n         \"minimum_balance\" : NULL,\n         \"show_alternative_prices\": 0,\n         \"module_access\": \"\",\n         \"owner_name\": \"John Doe\",\n         \"balance\": 10,\n         \"cached_balance\" : 10,\n         \"usage_timestamp\": \"2017-08-12 00:55:10\",\n         \"create_timestamp\": \"2017-08-12 00:55:10\",\n         \"update_timestamp\": \"2017-08-12 00:55:10\",\n         \"rights\": [\n             2250 : {\n                 \"id\": \"2250\"\n                 \"active\": \"1\"\n                 +\"accepted\": \"1\"\n                 +\"account_id\": \"2407\"\n                 +\"issuer_person_id\": \"1\"\n                 +\"person_id\": \"1\"\n                 +\"issue_date\": \"2017-09-06 16:56:42\"\n                 +\"expiry_date\": \"0000-00-00 00:00:00\"\n                 +\"create_timestamp\": \"2017-09-06 16:56:43\"\n                 +\"update_timestamp\": \"2017-09-06 16:56:43\"\n                 +\"unique_id\": \"b87e11a09111b4132ac457c15060c53a\"\n                 +\"__origin_table_name\": \"rights_accounts\"\n                 +\"__origin_record_id\": \"2250\"\n                 +\"issuer_person_name\": \"John Doe\"\n                 +\"person_name\": \"Jane Doe\"\n             },\n             ...\n         ],\n         \"rights_summary\" : \"You, Jane Doe\",\n         ...\n         }\n      }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Example response:",
+          "content": "HTTPS/1.1 403 Forbidden\n{\n    \"status\": false,\n    \"error\": \"Invalid API key\"\n}",
+          "type": "json"
+        }
+      ],
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "ApiDisabled",
+            "description": "<p>The API is disabled for your distribution of Lassie.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidApiKey",
+            "description": "<p>The <code>api_key</code> was not found.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidApiHash",
+            "description": "<p>The <code>api_hash</code> does not match the hash result of the calculation where <code>api_hash_content</code> is used.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "ExpiredApiHash",
+            "description": "<p>The <code>api_hash</code> is already used and therefore expired.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "/home/pep/htdocs/lassie-core/app/application/controllers/Api.php",
+    "groupTitle": "Person",
+    "sampleRequest": [
+      {
+        "url": "https://demo.lassie.cloud/api/v2/person/account/update/"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "api/v2/person/account/upgrade/",
     "title": "Upgrade personal account",
     "version": "2.0.0",
     "name": "Upgrade_personal_account",
@@ -1994,7 +2343,7 @@
       "examples": [
         {
           "title": "Basic response:",
-          "content": "HTTPS/1.1 200 Success\n {\n     \"status\": true,\n     \"error\": \"\",\n     \"module_name\": \"finance\",\n     \"account_balance\": false\n }",
+          "content": "HTTPS/1.1 200 Success\n {\n     \"status\": true,\n     \"error\": \"\",\n     \"account_balance\": false\n }",
           "type": "json"
         }
       ]
@@ -2043,7 +2392,7 @@
       "examples": [
         {
           "title": "Example response:",
-          "content": "HTTPS/1.1 400 Bad Request\n {\n     \"status\": false,\n     \"error\": \"The associated account is unknown or is not valid after this transaction.\",\n     \"module_name\": \"finance\"\n }",
+          "content": "HTTPS/1.1 400 Bad Request\n {\n     \"status\": false,\n     \"error\": \"The associated account is unknown or is not valid after this transaction.\",\n }",
           "type": "json"
         }
       ]
@@ -2052,7 +2401,7 @@
     "groupTitle": "Person",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/person/account/upgrade/"
+        "url": "https://demo.lassie.cloud/api/v2/person/account/upgrade/"
       }
     ],
     "parameter": {
@@ -2106,7 +2455,7 @@
   },
   {
     "type": "post",
-    "url": "api/auth/login/check/",
+    "url": "api/v2/auth/login/check/",
     "title": "Verify person authentication",
     "version": "2.0.0",
     "name": "Peron_Auth_Login_Check",
@@ -2191,7 +2540,7 @@
     "groupTitle": "Person_Auth",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/auth/login/check/"
+        "url": "https://demo.lassie.cloud/api/v2/auth/login/check/"
       }
     ],
     "parameter": {
@@ -2238,7 +2587,7 @@
   },
   {
     "type": "post",
-    "url": "api/auth/login/create/",
+    "url": "api/v2/auth/login/create/",
     "title": "Create person login account",
     "version": "2.0.0",
     "name": "Person_Auth_Login_Create",
@@ -2271,7 +2620,7 @@
       "examples": [
         {
           "title": "Example response:",
-          "content": "HTTPS/1.1 200 Success\n {\n     \"id\": \"46\",\n     \"active\": \"1\",\n     \"api_key\": \"28bdccc9cd9792c6e37dda66372620b7\",\n     \"api_secret\": \"53b60f95789b3a43edc5fc9aac8618c7\",\n     \"name\": \"Person API for John Doe\",\n     \"type_id\": \"2\",\n     \"target_id\": \"1201717\",\n     \"description\": \"Personal data API for John Doe requested by 127.0.0.1 using windows\",\n     \"responsible_name\": \"John Doe\",\n     \"responsible_email\": \"example@gmail.com\",\n     \"create_timestamp\": \"2016-02-26 22:31:10\",\n     \"update_timestamp\": \"2016-02-26 22:31:10\",\n     ...\n }",
+          "content": "HTTPS/1.1 200 Success\n {\n     \"id\": \"46\",\n     \"active\": \"1\",\n     \"api_key\": \"28bdccc9cd9792c6e37dda66372620b7\",\n     \"api_secret\": \"53b60f95789b3a43edc5fc9aac8618c7\",\n     \"name\": \"Person API for John Doe\",\n     \"type_id\": \"2\",\n     \"person_id\": \"1201717\",\n     \"description\": \"Personal data API for John Doe requested by 127.0.0.1 using windows\",\n     \"responsible_name\": \"John Doe\",\n     \"responsible_email\": \"example@gmail.com\",\n     \"create_timestamp\": \"2016-02-26 22:31:10\",\n     \"update_timestamp\": \"2016-02-26 22:31:10\",\n     ...\n }",
           "type": "json"
         }
       ]
@@ -2323,7 +2672,7 @@
     "groupTitle": "Person_Auth",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/auth/login/create/"
+        "url": "https://demo.lassie.cloud/api/v2/auth/login/create/"
       }
     ],
     "parameter": {
@@ -2370,7 +2719,7 @@
   },
   {
     "type": "post",
-    "url": "api/auth/login/reset/",
+    "url": "api/v2/auth/login/reset/",
     "title": "Reset Password",
     "version": "2.0.0",
     "name": "Person_Auth_Login_Reset",
@@ -2478,13 +2827,13 @@
     "groupTitle": "Person_Auth",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/auth/login/reset/"
+        "url": "https://demo.lassie.cloud/api/v2/auth/login/reset/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/auth/login/",
+    "url": "api/v2/auth/login/",
     "title": "Create person API key",
     "version": "2.0.0",
     "name": "Post_Person_Api",
@@ -2517,7 +2866,7 @@
       "examples": [
         {
           "title": "Example response:",
-          "content": "HTTPS/1.1 200 Success\n {\n     \"id\": \"46\",\n     \"active\": \"1\",\n     \"api_key\": \"28bdccc9cd9792c6e37dda66372620b7\",\n     \"api_secret\": \"53b60f95789b3a43edc5fc9aac8618c7\",\n     \"name\": \"Person API for John Doe\",\n     \"type_id\": \"2\",\n     \"target_id\": \"1201717\",\n     \"description\": \"Personal data API for John Doe requested by 127.0.0.1 using windows\",\n     \"responsible_name\": \"John Doe\",\n     \"responsible_email\": \"example@gmail.com\",\n     \"create_timestamp\": \"2016-02-26 22:31:10\",\n     \"update_timestamp\": \"2016-02-26 22:31:10\",\n     ...\n }",
+          "content": "HTTPS/1.1 200 Success\n {\n     \"id\": \"46\",\n     \"active\": \"1\",\n     \"api_key\": \"28bdccc9cd9792c6e37dda66372620b7\",\n     \"api_secret\": \"53b60f95789b3a43edc5fc9aac8618c7\",\n     \"name\": \"Person API for John Doe\",\n     \"type_id\": \"2\",\n     \"person_id\": \"1201717\",\n     \"description\": \"Personal data API for John Doe requested by 127.0.0.1 using windows\",\n     \"responsible_name\": \"John Doe\",\n     \"responsible_email\": \"example@gmail.com\",\n     \"create_timestamp\": \"2016-02-26 22:31:10\",\n     \"update_timestamp\": \"2016-02-26 22:31:10\",\n     ...\n }",
           "type": "json"
         }
       ]
@@ -2569,7 +2918,7 @@
     "groupTitle": "Person_Auth",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/auth/login/"
+        "url": "https://demo.lassie.cloud/api/v2/auth/login/"
       }
     ],
     "parameter": {
@@ -2616,7 +2965,7 @@
   },
   {
     "type": "post",
-    "url": "api/management/person/create/",
+    "url": "api/v2/management/person/create/",
     "title": "Create new person record",
     "version": "2.0.0",
     "name": "Post_Create_Person",
@@ -2695,7 +3044,7 @@
     "groupTitle": "Person_Management",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/management/person/create/"
+        "url": "https://demo.lassie.cloud/api/v2/management/person/create/"
       }
     ],
     "parameter": {
@@ -2980,7 +3329,7 @@
   },
   {
     "type": "post",
-    "url": "api/management/person/update/",
+    "url": "api/v2/management/person/update/",
     "title": "Update existing person record",
     "version": "2.0.0",
     "name": "Post_Update_Person",
@@ -3065,7 +3414,7 @@
     "groupTitle": "Person_Management",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/management/person/update/"
+        "url": "https://demo.lassie.cloud/api/v2/management/person/update/"
       }
     ],
     "parameter": {
@@ -3350,7 +3699,7 @@
   },
   {
     "type": "get",
-    "url": "api/transaction_account/",
+    "url": "api/v2/transaction/account/",
     "title": "Get account",
     "version": "2.0.0",
     "name": "Get_Account",
@@ -3364,7 +3713,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i https://demo.lassie.cloud/api/v2/transaction_account\n    ?transaction_account_id=57dk49sk3ks\n    &api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/transaction/account\n    ?transaction_account_id=57dk49sk3ks\n    &api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
         "type": "json"
       }
     ],
@@ -3469,13 +3818,13 @@
     "groupTitle": "Transaction",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/transaction_account/"
+        "url": "https://demo.lassie.cloud/api/v2/transaction/account/"
       }
     ]
   },
   {
     "type": "get",
-    "url": "api/transaction_product_categories/",
+    "url": "api/v2/transaction/product_categories/",
     "title": "Get product categories",
     "version": "2.0.0",
     "name": "Get_Product_Categories",
@@ -3489,7 +3838,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i https://demo.lassie.cloud/api/v2/transaction_product_categories\n    ?api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/transaction/product_categories\n    ?api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
         "type": "json"
       }
     ],
@@ -3517,7 +3866,7 @@
     "groupTitle": "Transaction",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/transaction_product_categories/"
+        "url": "https://demo.lassie.cloud/api/v2/transaction/product_categories/"
       }
     ],
     "parameter": {
@@ -3580,7 +3929,7 @@
   },
   {
     "type": "get",
-    "url": "api/transaction_products/",
+    "url": "api/v2/transaction/products/",
     "title": "Get products",
     "version": "2.0.0",
     "name": "Get_Products",
@@ -3594,7 +3943,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i https://demo.lassie.cloud/api/v2/transaction_products\n    ?api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/transaction/products\n    ?api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
         "type": "json"
       }
     ],
@@ -3622,7 +3971,7 @@
     "groupTitle": "Transaction",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/transaction_products/"
+        "url": "https://demo.lassie.cloud/api/v2/transaction/products/"
       }
     ],
     "parameter": {
@@ -3685,7 +4034,7 @@
   },
   {
     "type": "get",
-    "url": "api/transaction/",
+    "url": "api/v2/transaction/",
     "title": "Get transaction",
     "version": "2.0.0",
     "name": "Get_Transaction",
@@ -3804,13 +4153,13 @@
     "groupTitle": "Transaction",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/transaction/"
+        "url": "https://demo.lassie.cloud/api/v2/transaction/"
       }
     ]
   },
   {
     "type": "get",
-    "url": "api/transaction_types/",
+    "url": "api/v2/transaction/types/",
     "title": "Get transaction types",
     "version": "2.0.0",
     "name": "Get_Transaction_Types",
@@ -3824,7 +4173,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i https://demo.lassie.cloud/api/v2/transaction_types\n    ?api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
+        "content": "curl -i https://demo.lassie.cloud/api/v2/transaction/types\n    ?api_key=6fef96409095ac681a2f7e5baa07a7c1\n    &api_hash=51aeff8712ff502bf3c2df71025ad2d3\n    &api_hash_content=149394939",
         "type": "json"
       }
     ],
@@ -3852,7 +4201,7 @@
     "groupTitle": "Transaction",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/transaction_types/"
+        "url": "https://demo.lassie.cloud/api/v2/transaction/types/"
       }
     ],
     "parameter": {
@@ -3915,7 +4264,7 @@
   },
   {
     "type": "post",
-    "url": "api/transaction/",
+    "url": "api/v2/transaction/",
     "title": "Post transaction",
     "version": "2.0.0",
     "name": "Post_Transaction",
@@ -4071,13 +4420,13 @@
     "groupTitle": "Transaction",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/transaction/"
+        "url": "https://demo.lassie.cloud/api/v2/transaction/"
       }
     ]
   },
   {
     "type": "post",
-    "url": "api/transaction/account/upgrade/",
+    "url": "api/v2/transaction/account/upgrade/",
     "title": "Upgrade account",
     "version": "2.0.0",
     "name": "Upgrade_account",
@@ -4230,7 +4579,7 @@
     "groupTitle": "Transaction",
     "sampleRequest": [
       {
-        "url": "https://demo.lassie.cloud/api/transaction/account/upgrade/"
+        "url": "https://demo.lassie.cloud/api/v2/transaction/account/upgrade/"
       }
     ]
   }
